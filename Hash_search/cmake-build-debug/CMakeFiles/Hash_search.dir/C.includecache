@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/CLionProjects/Hash_search/hash_construction.h
+statistics.h
+D:/CLionProjects/Hash_search/statistics.h
+
+D:/CLionProjects/Hash_search/main.c
+stdio.h
+-
+hash_construction.h
+D:/CLionProjects/Hash_search/hash_construction.h
+
+D:/CLionProjects/Hash_search/statistics.h
+stdlib.h
+-
+
