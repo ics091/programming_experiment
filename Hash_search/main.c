@@ -19,7 +19,7 @@ int main() {
         }
     }
 
-    FILE *fl_patterns = fopen("D:\\CLionProjects\\Hash_search\\p_test.txt", "r");
+    FILE *fl_patterns = fopen("D:\\CLionProjects\\Hash_search\\patterns-127w_2.txt", "r");
     if (fl_patterns == 0){
         printf("open fail...\n");
         return 0;
@@ -57,7 +57,7 @@ int main() {
 
     //从文件读取words
     int words_ct = 0;
-    FILE *fl_words = fopen("D:\\CLionProjects\\Hash_search\\w_test.txt", "r");
+    FILE *fl_words = fopen("D:\\CLionProjects\\Hash_search\\words-98w.txt", "r");
     if (fl_words == 0){
         printf("open fail...\n");
         return 0;
@@ -68,6 +68,8 @@ int main() {
     }
 
     //在hash表中查找比对
+    int c_yes = 0;
+    int c_no = 0;
     struct Chain_Node *p;
     for (int j = 0; j < words_ct-1; ++j) {
         unsigned int pstn = Hash_fun_l(words[j], length);
@@ -78,9 +80,17 @@ int main() {
             if (result == 1) break;
             else p = p->next_node;
         }
-        if (result == 1) printf("%s %s\n",words[j], "YES");
-        else printf("%s %s\n", words[j], "NO");
+        if (result == 1) {
+            c_yes ++;
+            //printf("%s %s\n",words[j], "YES");
+        }
+        else {
+            c_no ++;
+            //printf("%s %s\n", words[j], "NO");
+        }
     }
+
+    printf("%d %d", c_yes, c_no);
 
     free(table);
     return 0;

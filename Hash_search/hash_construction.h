@@ -7,10 +7,10 @@
 
 #endif //HASH_SEARCH_HASH_CONSTRUCTION_H
 
-#define MAX_WORD 30
-#define MAX_PATTERNS 50
-#define WORD_NUM 11
-#define PATTERN_NUM 26
+#define MAX_WORD 256
+#define MAX_PATTERNS 256
+#define WORD_NUM 990000
+#define PATTERN_NUM 1290000
 
 #include "statistics.h"
 
