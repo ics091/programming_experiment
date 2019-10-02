@@ -36,6 +36,21 @@ struct BitArray {
 
 };
 
+struct Global_stats {
+    long long mem;
+    long long cmp_num;
+};
+
+extern struct Global_stats global_stats;
+
+//分配内存
+void* bupt_malloc(int size){
+    if (size <= 0) return NULL;
+    //分配char类型大小内存个数
+    global_stats.mem += size;
+    return calloc(size, sizeof(unsigned char));
+}
+
 struct BitArray *bitArray_create(unsigned long bits) {
 
     struct BitArray *bitArray = NULL;
@@ -47,7 +62,8 @@ struct BitArray *bitArray_create(unsigned long bits) {
     unsigned long length = 0;
     length = bits/A_BYTE;
     //为字符数组分配空间
-    bitArray->byte_array = calloc(length, sizeof(unsigned char));
+    //bitArray->byte_array = calloc(length, sizeof(unsigned char));
+    bitArray->byte_array = bupt_malloc(length);
     if (bitArray->byte_array == NULL) {
         free(bitArray);
         return NULL;
@@ -236,6 +252,7 @@ unsigned long long hash(int type, char *s, unsigned long long limit) {
         code = (code + (param * (*ptr)));
         param = (param * p);
         ++ptr;
+        global_stats.cmp_num ++;
     }
     code = (code ^ 9999901) % limit;
     return code;

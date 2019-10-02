@@ -4,6 +4,13 @@
 struct Global_stats global_stats;
 
 int main() {
+
+    global_stats.mem = 0;
+    global_stats.cmp_num = 0;
+    int words_ct = 0;
+    int patterns_ct = 0;
+    int words_match = 0;
+
     struct Hash_table *table;
     table = bupt_malloc(PATTERN_NUM);
     unsigned int length = 249997;
@@ -19,7 +26,7 @@ int main() {
         }
     }
 
-    FILE *fl_patterns = fopen("D:\\CLionProjects\\Hash_search\\patterns-127w_2.txt", "r");
+    FILE *fl_patterns = fopen("patterns-127w_2.txt", "r");
     if (fl_patterns == 0){
         printf("open fail...\n");
         return 0;
@@ -56,8 +63,7 @@ int main() {
     }
 
     //从文件读取words
-    int words_ct = 0;
-    FILE *fl_words = fopen("D:\\CLionProjects\\Hash_search\\words-98w.txt", "r");
+    FILE *fl_words = fopen("words-98w.txt", "r");
     if (fl_words == 0){
         printf("open fail...\n");
         return 0;
@@ -70,27 +76,27 @@ int main() {
     //在hash表中查找比对
     int c_yes = 0;
     int c_no = 0;
+    FILE *result = fopen("result.txt", "w+");
     struct Chain_Node *p;
     for (int j = 0; j < words_ct-1; ++j) {
         unsigned int pstn = Hash_fun_l(words[j], length);
-        int result = 0;
+        int res = 0;
         p = table->chain[pstn];
         while (p != NULL){
-            result = byte_cmp_pls(p->string, words[j]);
-            if (result == 1) break;
+            res = byte_cmp_pls(p->string, words[j]);
+            if (res == 1) break;
             else p = p->next_node;
         }
-        if (result == 1) {
-            c_yes ++;
-            //printf("%s %s\n",words[j], "YES");
+        if (res == 1) {
+            words_match++;
+            fprintf(result, "%s %s\n",words[j], "yes");
         }
         else {
-            c_no ++;
-            //printf("%s %s\n", words[j], "NO");
+            fprintf(result, "%s %s\n",words[j], "no");
         }
     }
 
-    printf("%d %d", c_yes, c_no);
+    fprintf(result, "%lld %lld %d %d\n",(MAX_PATTERNS*global_stats.mem)/1024, global_stats.cmp_num, words_ct, words_match);
 
     free(table);
     return 0;

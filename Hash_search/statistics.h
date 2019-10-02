@@ -16,20 +16,17 @@ struct Global_stats {
 
 extern struct Global_stats global_stats;
 
+void* bupt_malloc(int size){
+    if (size <= 0) return NULL;
+    global_stats.mem += size;
+    return malloc(size* (MAX_PATTERNS*sizeof(char) + 8*sizeof(char*)));
+}
+
 int byte_cmp(char a,char b){
     ++global_stats.cmp_num;
     if ((a-b) == 0) return 1;
     else return 0;
 }
-
-void* bupt_malloc(int size){
-    if (size <= 0) return NULL;
-
-    //global_stats.mem += size* sizeof(char);
-    return malloc(size* (MAX_PATTERNS*sizeof(char) + 8*sizeof(char*)));
-}
-
-
 
 int byte_cmp_pls(char *a, char *b){
     int _match = 0;
@@ -40,6 +37,7 @@ int byte_cmp_pls(char *a, char *b){
             _match = 1;
             break;
         }
+        global_stats.cmp_num ++;
     }
     return _match;
 }

@@ -1,14 +1,21 @@
 #include <stdio.h>
 #include "bitarray.h"
 
+struct Global_stats global_stats;
+
 int main() {
+    global_stats.mem = 0;
+    global_stats.cmp_num = 0;
+    int words_ct = 0;
+    int patterns_ct = 0;
+    int words_match = 0;
     struct BitArray *bitArray;
     const unsigned long long bit_length = 1 << 26;
     bitArray = bitArray_create(bit_length);
     //读取patterns文件
     char *now_p;
     //FILE *fl_patterns = fopen("D:\\CLionProjects\\BF_Search\\p_test.txt", "r");
-    FILE *fl_patterns = fopen("D:\\CLionProjects\\BF_Search\\patterns-127w_2.txt", "r");
+    FILE *fl_patterns = fopen("patterns-127w_2.txt", "r");
     if (fl_patterns == 0){
         printf("open fail...\n");
         return 0;
@@ -35,16 +42,20 @@ int main() {
         //printf("%d",bitArray_test_bit(bitArray,j));//按64位每行打印
 
     //检索word
+
+    FILE *result = fopen("result.txt", "w+");
     int ct = 0;
     char *now_w;
     //FILE *fl_words = fopen("D:\\CLionProjects\\BF_Search\\w_test.txt", "r");
-    FILE *fl_words = fopen("D:\\CLionProjects\\BF_Search\\words-98w.txt", "r");
+    FILE *fl_words = fopen("words-98w.txt", "r");
     if (fl_words == 0){
         printf("open fail...\n");
         return 0;
     }
+
     while (!feof(fl_words)){
         now_w = malloc(MAX_WORD*sizeof(char));
+        words_ct++;
         fscanf(fl_words, "%s", now_w);
         /*if (bitArray_test_bit(bitArray, RSHash(now_w)) == 1 &&
                 bitArray_test_bit(bitArray, JSHash(now_w)) == 1 &&
@@ -65,11 +76,17 @@ int main() {
                 bitArray_test_bit(bitArray, hash(4, now_w, bit_length)) == 1&&
                 bitArray_test_bit(bitArray, hash(5, now_w, bit_length)) == 1&&
                 bitArray_test_bit(bitArray, hash(6, now_w, bit_length)) == 1) {
-            //printf("%s %s\n", now_w, "YES");
+            words_match++;
+            fprintf(result, "%s %s\n",now_w, "yes");
             ct++;
+        } else {
+            fprintf(result, "%s %s\n",now_w, "no");
         }
         free(now_w);
     }
-    printf("%d", ct);
+
+    //最后一行输出
+    fprintf(result, "%lld %lld %d %d\n",global_stats.mem/1024, global_stats.cmp_num, words_ct, words_match);
+
     return 0;
 }

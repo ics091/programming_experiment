@@ -9,8 +9,8 @@
 
 #define MAX_WORD 256
 #define MAX_PATTERNS 256
-#define WORD_NUM 990000
-#define PATTERN_NUM 1290000
+#define WORD_NUM 986000
+#define PATTERN_NUM 1271000
 
 #include "statistics.h"
 
@@ -24,7 +24,7 @@
     struct Chain_Node **chain;
 };
 
-
+//hash函数
 unsigned int Hash_fun_l(const char *words, unsigned int length) {
     unsigned int b=378551 ;
     unsigned int a=63689 ;
@@ -38,7 +38,6 @@ unsigned int Hash_fun_l(const char *words, unsigned int length) {
         a=(a*b)%length ;
         ++c;
     }
-
     return(hash % length);
 }
 
