@@ -1,0 +1,3 @@
+"D:\JetBrains\CLion 2019.2.2\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\btree_search.dir/objects.a
+C:\mingw64\bin\ar.exe cr CMakeFiles\btree_search.dir/objects.a @CMakeFiles\btree_search.dir\objects1.rsp
+C:\mingw64\bin\gcc.exe -g   -Wl,--whole-archive CMakeFiles\btree_search.dir/objects.a -Wl,--no-whole-archive  -o btree_search.exe -Wl,--out-implib,libbtree_search.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\btree_search.dir\linklibs.rsp
