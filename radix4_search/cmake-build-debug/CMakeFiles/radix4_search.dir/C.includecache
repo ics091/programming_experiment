@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/CLionProjects/radix4_search/base_func.h
+stdlib.h
+-
+string.h
+-
+
+D:/CLionProjects/radix4_search/bits_.h
+stdlib.h
+-
+string.h
+-
+
+D:/CLionProjects/radix4_search/main.c
+stdio.h
+-
+radix4tree.h
+D:/CLionProjects/radix4_search/radix4tree.h
+
+D:/CLionProjects/radix4_search/radix4tree.h
+base_func.h
+D:/CLionProjects/radix4_search/base_func.h
+bits_.h
+D:/CLionProjects/radix4_search/bits_.h
+
