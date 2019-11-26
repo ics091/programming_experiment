@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define PATTERN_NUM 20
+#include <time.h>
+#define PATTERN_NUM 1500
 #define MAX_PATTERNS 256
 
 struct Pattern_ctn {
@@ -22,11 +23,13 @@ void next_set(struct Pattern_ctn p);
 int KMP(char *string, struct Pattern_ctn p);
 void sort_2(struct Pattern_ctn *patternCtn, int l, int r);
 void swap_pattern(struct Pattern_ctn *patternCtn, int i, int j);
-int compare(struct Pattern_ctn *patternCtn, int j, int i);
+int compare(struct Pattern_ctn *patternCtn, int i, int j);
 
 int main() {
+    int begintime, endtime;
+    begintime = clock();
     //读取string.txt文件
-    FILE *fl_str = fopen("D:\\CLionProjects\\Multikmp\\string-kmp-test.txt", "r");
+    FILE *fl_str = fopen("..\\string.txt", "r");
     char *string = bupt_malloc(880 * 1024 * 1024 * sizeof(char));
     char c;
     int k = 0;
@@ -38,13 +41,17 @@ int main() {
         }
     }
 
-    FILE *fl_patterns = fopen("D:\\CLionProjects\\Multikmp\\pattern-kmp-test.txt", "r");
+    printf("read string finish\n");
+
+    FILE *fl_patterns = fopen("..\\pattern_bf_kmp.txt", "r");
     struct Pattern_ctn *patternCtn = bupt_malloc(PATTERN_NUM * sizeof(struct Pattern_ctn));
     for (int j = 0; j < PATTERN_NUM; ++j) {
         patternCtn[j].pattern = bupt_malloc(MAX_PATTERNS * sizeof(char));
     }
 
     int pattern_num = read_pattern(fl_patterns, patternCtn);
+
+    printf("read %d patterns\n", pattern_num);
 
     for (int i = 0; i < pattern_num; ++i) {
         next_set(patternCtn[i]);
@@ -59,6 +66,8 @@ int main() {
         patternCtn[i].ctn = KMP(string,patternCtn[i]);
     }
 
+    printf("KMP search finish\n");
+
     /*
     for (int j = 0; j < patternCtn[11].pattern_len; ++j) {
         printf("%d ",patternCtn[11].next[j]);
@@ -68,13 +77,18 @@ int main() {
      */
     sort_2(patternCtn,0,pattern_num - 1);
 
+    printf("sort finish\n");
+
     FILE *result = fopen(".\\result.txt", "w+");
     for (int p = 0; p < pattern_num; ++p) {
         //printf("%s %d\n", patternCtn[p].pattern, patternCtn[p].ctn);
         fprintf(result, "%s %d\n", patternCtn[p].pattern, patternCtn[p].ctn);
     }
 
-    fprintf(result, "%lld %lld\n", global_stats.mem/1024, global_stats.cmp_num/1000);
+    fprintf(result, "%lldKB %lldK次\n", global_stats.mem/1024, global_stats.cmp_num/1000);
+
+    endtime = clock();
+    printf("cost time:%dms\n", endtime - begintime);
 }
 
 int read_pattern(FILE *file, struct Pattern_ctn *patternCtn) {
@@ -176,22 +190,22 @@ void sort_2(struct Pattern_ctn *patternCtn, int l, int r) {
         }
 
         while (left < right) {
-            while (left < right && mid < right && compare(patternCtn, right, mid) >= 0) {
+            while (left < right && mid < right && compare(patternCtn, mid, right) > 0) {
                 right--;
             }
-            if (left < right) {
+            if (left < right && mid < right) {
                 swap_pattern(patternCtn, left++, right);
                 mid = right;
             }
-            while (left < right && left < mid && compare(patternCtn, left, mid) < 0) {
+            while (left < right && left < mid && compare(patternCtn, left, mid) > 0) {
                 left++;
             }
             if (left < right && left < mid) {
-                swap_pattern(patternCtn, right--, left);
+                swap_pattern(patternCtn, left, right--);
                 mid = left;
             }
         }
-        // swap(left, mid);
+        swap_pattern(patternCtn, left, mid);
 
         // 递归调用
         sort_2(patternCtn, l, mid-1); // 排序mid左边
@@ -199,7 +213,7 @@ void sort_2(struct Pattern_ctn *patternCtn, int l, int r) {
     }
 }
 
-int compare(struct Pattern_ctn *patternCtn, int j, int i) {
+int compare(struct Pattern_ctn *patternCtn, int i, int j) {
     return patternCtn[i].ctn - patternCtn[j].ctn;
 }
 

@@ -10,7 +10,8 @@
 #include "stdlib.h"
 #include "string.h"
 #define MAX_PATTERNS 256
-#define PATTERN_NUM 20
+#define PATTERN_NUM 2256690
+//#define PATTERN_NUM 20
 
 struct Pattern_ctn {
     char *pattern;
@@ -50,5 +51,25 @@ int read_pattern(FILE *file, struct Pattern_ctn *patternCtn) {
         if (c == EOF) break;
     }
     return j;
+}
+
+int byte_cmp(char a,char b){
+    if ((a-b) == 0) return 1;
+    else return 0;
+}
+
+//±È½Ïº¯Êý
+int byte_cmp_pls(char *a, char *b){
+    int _match = 0;
+    while (byte_cmp(*a, *b)){
+        a++;
+        b++;
+        if (byte_cmp(*a, *b) == 1 && *a == '\0' && *b == '\0') {
+            _match = 1;
+            break;
+        }
+        //global_stats.cmp_num ++;
+    }
+    return _match;
 }
 

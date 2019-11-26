@@ -11,7 +11,7 @@
 #include "string.h"
 #include "memory.h"
 int postion(int ascii);
-int compare(struct Pattern_ctn *patternCtn, int j, int i);
+int compare(struct Pattern_ctn *patternCtn, int i, int j);
 void swap_pattern(struct Pattern_ctn *patternCtn, int i, int j);
 struct Node {
     int ascii;
@@ -98,11 +98,11 @@ struct Node *Insert_trie(struct Node *node, const int *ascii_list, int len, int 
             node->child[pos] = init_x();
             node->child[pos]->ascii = _ascii;
             i++;
-            printf("%d %d %d\n",_ascii, node->child[pos]->ascii, i-1);
+            //printf("%d %d %d\n",_ascii, node->child[pos]->ascii, i-1);
             Insert_trie(node->child[pos], ascii_list, len, i);
         } else {
             i++;
-            printf("%d %d %d exist\n",_ascii, node->child[pos]->ascii, i-1);
+            //printf("%d %d %d exist\n",_ascii, node->child[pos]->ascii, i-1);
             Insert_trie(node->child[pos], ascii_list, len, i);
         }
     } else {
@@ -116,7 +116,7 @@ struct Node *Insert_trie(struct Node *node, const int *ascii_list, int len, int 
 void build_fail(struct Node *trie) {
     struct Node *root = trie;
     Queue *queue = Init_queue();
-    printf("queue init\n");
+    //printf("queue init\n");
     //将第二层出现的节点入队
     for (int i = 0; i < 255; ++i) {
         if (root->child[i] != NULL) {
@@ -124,15 +124,15 @@ void build_fail(struct Node *trie) {
             root->child[i]->fail = root;
             //入队
             Q_insert(queue, root->child[i]);
-            printf("%d ", root->child[i]->ascii);
+            //printf("%d ", root->child[i]->ascii);
         }
     }
 
-    printf("\n");
+    //printf("\n");
 
     while (!Qisempty(queue)) {
-        printf("------\n");
-        printf("start bulid %d\n", queue->front->ascii);
+        //printf("------\n");
+        //printf("start bulid %d\n", queue->front->ascii);
         struct Node *now = queue->front;
         Q_pop(queue);
 
@@ -151,7 +151,7 @@ void build_fail(struct Node *trie) {
                 Q_insert(queue, now->child[j]);
             }
         }
-        printf("finish\n");
+        //printf("finish\n");
     }
 }
 
@@ -187,22 +187,22 @@ void sort_2(struct Pattern_ctn *patternCtn, int l, int r) {
         }
 
         while (left < right) {
-            while (left < right && mid < right && compare(patternCtn, right, mid) >= 0) {
+            while (left < right && mid < right && compare(patternCtn, mid, right) > 0) {
                 right--;
             }
-            if (left < right) {
+            if (left < right && mid < right) {
                 swap_pattern(patternCtn, left++, right);
                 mid = right;
             }
-            while (left < right && left < mid && compare(patternCtn, left, mid) < 0) {
+            while (left < right && left < mid && compare(patternCtn, left, mid) > 0) {
                 left++;
             }
             if (left < right && left < mid) {
-                swap_pattern(patternCtn, right--, left);
+                swap_pattern(patternCtn, left, right--);
                 mid = left;
             }
         }
-        // swap(left, mid);
+        swap_pattern(patternCtn, left, mid);
 
         // 递归调用
         sort_2(patternCtn, l, mid-1); // 排序mid左边
@@ -210,15 +210,22 @@ void sort_2(struct Pattern_ctn *patternCtn, int l, int r) {
     }
 }
 
-int compare(struct Pattern_ctn *patternCtn, int j, int i) {
+int compare(struct Pattern_ctn *patternCtn, int i, int j) {
     return patternCtn[i].ctn - patternCtn[j].ctn;
 }
 
 void swap_pattern(struct Pattern_ctn *patternCtn, int i, int j) {
+    //printf("------\n");
+    //printf("swap%d %d %s^%d %s^%d\n", i, j, patternCtn[i].pattern,patternCtn[i].ctn, patternCtn[j].pattern, patternCtn[j].ctn);
     int tmp = patternCtn[i].ctn;
     char *tmp_p = patternCtn[i].pattern;
+
     patternCtn[i].ctn = patternCtn[j].ctn;
     patternCtn[i].pattern = patternCtn[j].pattern;
+
     patternCtn[j].ctn = tmp;
     patternCtn[j].pattern = tmp_p;
+
+    //printf("<-->%d %d %s^%d %s^%d\n", i, j, patternCtn[i].pattern,patternCtn[i].ctn, patternCtn[j].pattern, patternCtn[j].ctn);
 }
+
